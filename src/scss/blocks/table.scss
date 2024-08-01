@@ -49,10 +49,11 @@
 }
 
 .scoreboard {
-  margin-bottom: 20px;
+  margin-block: 20px;
 }
 
 .restart {
+  display: inline-block;
   padding: 10px 20px;
   font-size: 16px;
 }

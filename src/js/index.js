@@ -15,6 +15,7 @@ const winningCombinations = [
 let userScore = 0;
 let pcScore = 0;
 let currentPlayer = null;
+let gameActive = true;
 
 const updateScoreboard = () => {
   document.getElementById('user-score').textContent = userScore;
@@ -27,11 +28,14 @@ const startGame = () => {
     button.classList.remove('cross', 'circle');
   });
   currentPlayer = Math.floor(Math.random() * 2);
+  gameActive = true;
   if (currentPlayer === 1) setTimeout(pcMove, 500);
 };
 
+const showGameEndAlert = () => alert('Game over. Please restart the game.');
+
 const handleUserMove = (target, pos) => {
-  if (table[pos] || currentPlayer !== 0) return;
+  if (!gameActive || table[pos] || currentPlayer !== 0) return;
 
   makeMove(target, pos, 'circle');
 
@@ -40,9 +44,13 @@ const handleUserMove = (target, pos) => {
       alert('User wins!');
       userScore++;
       updateScoreboard();
+      gameActive = false;
     }, 100);
   } else if (isTie()) {
-    setTimeout(() => alert('TIE!'), 100);
+    setTimeout(() => {
+      alert('TIE!');
+      gameActive = false;
+    }, 100);
   } else {
     currentPlayer = 1;
     setTimeout(pcMove, 500);
@@ -63,11 +71,15 @@ const findWinningMove = player => {
   return null;
 };
 
+const shouldPlayDefensively = () => Math.random() < 0.6;
+
 const pcMove = () => {
-  if (currentPlayer !== 1) return;
+  if (!gameActive || currentPlayer !== 1) return;
 
   let pos = findWinningMove('cross');
-  if (pos === null) pos = findWinningMove('circle');
+  if (pos === null && shouldPlayDefensively()) {
+    pos = findWinningMove('circle');
+  }
   if (pos === null) {
     const availablePositions = table.map((val, index) => (val === null ? index : null)).filter(val => val !== null);
     if (availablePositions.length) {
@@ -75,9 +87,7 @@ const pcMove = () => {
     }
   }
 
-  if (pos !== null) {
-    makePcMove(pos);
-  }
+  if (pos !== null) makePcMove(pos);
 };
 
 const makePcMove = pos => {
@@ -89,9 +99,13 @@ const makePcMove = pos => {
         alert('PC wins!');
         pcScore++;
         updateScoreboard();
+        gameActive = false;
       }, 100);
     } else if (isTie()) {
-      setTimeout(() => alert('TIE!'), 100);
+      setTimeout(() => {
+        alert('TIE!');
+        gameActive = false;
+      }, 100);
     } else {
       currentPlayer = 0;
     }
@@ -103,14 +117,20 @@ const makeMove = (target, pos, className) => {
   table[pos] = className;
 };
 
+const restartGame = () => startGame();
+
 document.addEventListener('click', ev => {
   const target = ev.target;
   if (target.classList.contains('button')) {
     const pos = target.dataset.pos;
-    handleUserMove(target, pos);
+    if (gameActive) {
+      handleUserMove(target, pos);
+    } else {
+      showGameEndAlert();
+    }
   }
 });
 
-document.getElementById('restart-button').addEventListener('click', startGame);
+document.getElementById('restart-button').addEventListener('click', restartGame);
 
 startGame();
