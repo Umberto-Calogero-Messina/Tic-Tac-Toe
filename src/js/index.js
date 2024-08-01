@@ -23,8 +23,11 @@ const winningCombinations = [
 
 let userScore = 0;
 let pcScore = 0;
-let currentPlayer = null;
+let currentPlayer = null; // Será 'user' o 'pc'
 let gameActive = true;
+
+import iconCross from '../assets/images/cross.svg';
+import iconCircle from '../assets/images/circle.svg';
 
 const updateScoreboard = () => {
   userScoreElement.textContent = userScore;
@@ -35,7 +38,7 @@ const updateTurnMessage = () => {
   if (!gameActive) {
     messageElement.textContent = 'Partita terminata';
   } else {
-    messageElement.textContent = currentPlayer === 0 ? 'Turno Player' : 'Turno PC';
+    messageElement.textContent = currentPlayer === 'user' ? 'Es el turno de: Player' : 'Es el turno de: PC';
   }
 };
 
@@ -44,7 +47,7 @@ const toggleRestartButton = enabled => {
 };
 
 const showPopup = message => {
-  popupMessageElement.textContent = message;
+  popupMessageElement.innerHTML = message;
   popupElement.classList.remove('d-none');
 };
 
@@ -52,11 +55,35 @@ const hidePopup = () => {
   popupElement.classList.add('d-none');
 };
 
-const endGame = (message, winner) => {
+const endGame = (winnerMessage, winner) => {
   setTimeout(() => {
+    let message = '';
+    if (winner === 'user') {
+      message = `
+        <div class="popup-content">
+          <img src="${iconCross}" class="popup-image-cross" alt="Cross">
+          <div class="winner-message">¡HA GANADO!</div>
+        </div>
+      `;
+      userScore++;
+    } else if (winner === 'pc') {
+      message = `
+        <div class="popup-content">
+          <img src="${iconCircle}" class="popup-image" alt="Circle">
+          <div class="winner-message">¡HA GANADO!</div>
+        </div>
+      `;
+      pcScore++;
+    } else {
+      message = `
+        <div class="popup-content tie">
+          <img src="${iconCircle}" class="popup-image" alt="Circle">
+          <img src="${iconCross}" class="popup-image-cross" alt="Cross">
+        </div>
+        <div class="tie-message">¡EMPATE!</div>
+      `;
+    }
     showPopup(message);
-    if (winner === 'user') userScore++;
-    if (winner === 'pc') pcScore++;
     updateScoreboard();
     gameActive = false;
     updateTurnMessage();
@@ -80,9 +107,9 @@ const findWinningMove = player => {
 
 const shouldPlayDefensively = () => Math.random() < 0.6;
 
-const checkAndHandleGameState = (winner, playerType) => {
+const checkAndHandleGameState = (winnerMessage, playerType) => {
   if (checkWin()) {
-    endGame(winner, playerType);
+    endGame(winnerMessage, playerType);
   } else if (isTie()) {
     endGame('Empate!');
   } else {
@@ -91,16 +118,16 @@ const checkAndHandleGameState = (winner, playerType) => {
 };
 
 const handleUserMove = (target, pos) => {
-  if (!gameActive || table[pos] || currentPlayer !== 0) return;
+  if (!gameActive || table[pos] || currentPlayer !== 'user') return;
 
-  makeMove(target, pos, 'circle');
+  makeMove(target, pos, 'cross');
   checkAndHandleGameState('User ha ganado!', 'user');
 };
 
 const makePcMove = pos => {
   const targetElement = document.querySelector(`span[data-pos='${pos}']`);
   if (targetElement) {
-    makeMove(targetElement, pos, 'cross');
+    makeMove(targetElement, pos, 'circle');
     checkAndHandleGameState('PC ha ganado', 'pc');
   }
 };
@@ -111,19 +138,19 @@ const makeMove = (target, pos, className) => {
 };
 
 const switchPlayer = () => {
-  currentPlayer = 1 - currentPlayer;
+  currentPlayer = currentPlayer === 'user' ? 'pc' : 'user';
   updateTurnMessage();
-  if (currentPlayer === 1) {
-    setTimeout(pcMove, 500);
+  if (currentPlayer === 'pc') {
+    setTimeout(pcMove, 1000);
   }
 };
 
 const pcMove = () => {
-  if (!gameActive || currentPlayer !== 1) return;
+  if (!gameActive || currentPlayer !== 'pc') return;
 
-  let pos = findWinningMove('cross');
+  let pos = findWinningMove('circle');
   if (pos === null && shouldPlayDefensively()) {
-    pos = findWinningMove('circle');
+    pos = findWinningMove('cross');
   }
   if (pos === null) {
     const availablePositions = table.map((val, index) => (val === null ? index : null)).filter(val => val !== null);
@@ -140,12 +167,12 @@ const startGame = () => {
   buttonElement.forEach(button => {
     button.classList.remove('cross', 'circle');
   });
-  currentPlayer = Math.floor(Math.random() * 2);
+  currentPlayer = Math.random() < 0.5 ? 'user' : 'pc'; // Seleccionar aleatoriamente el jugador inicial
   gameActive = true;
   updateTurnMessage();
   toggleRestartButton(false);
   hidePopup();
-  if (currentPlayer === 1) setTimeout(pcMove, 500);
+  if (currentPlayer === 'pc') setTimeout(pcMove, 1000);
 };
 
 const restartGame = () => startGame();
@@ -162,7 +189,7 @@ document.addEventListener('click', ev => {
   }
 });
 
-okButtonElement.addEventListener('click', hidePopup);
 restartElement.addEventListener('click', restartGame);
+okButtonElement.addEventListener('click', restartGame);
 
 startGame();

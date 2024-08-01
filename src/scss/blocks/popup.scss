@@ -1,20 +1,21 @@
 @use '../mixins/hover.scss' as *;
+@use '../mixins/responsive.scss' as *;
 .popup {
   position: fixed;
   top: 0;
   left: 0;
   width: 100vw;
   height: 100vh;
-  background: rgba(0, 0, 0, 0.5);
+  background: #5ec7bd;
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 1;
 
   &__content {
-    background: #fff;
-    padding: 20px;
-    border-radius: 8px;
+    background: #5ec7bd;
+    padding: 1.25rem;
+    border-radius: 0.5rem;
     text-align: center;
     position: relative;
   }
@@ -22,22 +23,60 @@
   &__message {
     display: block;
     margin-bottom: 10px;
-  }
-
-  &__button {
-    padding: 10px 20px;
-    border: none;
-    background: #007bff;
-    color: #fff;
-    border-radius: 4px;
-    cursor: pointer;
-
-    @include hover {
-      background: #0056b3;
-    }
+    font-family: 'Alfa Slab One', serif;
+    font-weight: 400;
+    font-size: 2.5rem;
+    line-height: 4.25rem;
+    letter-spacing: 1%;
+    color: #545454;
   }
 }
 
 .d-none {
   display: none;
+}
+
+.tie {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: 30px;
+}
+
+.popup-image {
+  width: 140px;
+  height: 140px;
+  margin-left: 20px;
+  @include responsive(laptop) {
+    width: 174px;
+    height: 174px;
+    margin-left: 40px;
+  }
+}
+
+.popup-image-cross {
+  width: 206px;
+  height: 206px;
+  margin-left: 15px;
+  @include responsive(laptop) {
+    width: 240px;
+    height: 240px;
+    margin-left: 20px;
+  }
+}
+
+.winner-message,
+.tie-message {
+  margin-top: 10px;
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 50px;
+  @include responsive(laptop) {
+    font-size: 2.1875rem;
+  }
+}
+
+.tie-message {
+  text-align: center;
+  width: 100%;
 }
