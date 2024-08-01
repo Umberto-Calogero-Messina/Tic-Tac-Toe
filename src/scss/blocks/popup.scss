@@ -46,11 +46,11 @@
 .popup-image {
   width: 140px;
   height: 140px;
-  margin-left: 20px;
+  margin-left: 15px;
   @include responsive(laptop) {
     width: 174px;
     height: 174px;
-    margin-left: 40px;
+    margin-left: 20px;
   }
 }
 

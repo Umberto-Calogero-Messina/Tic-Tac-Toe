@@ -102,6 +102,10 @@
   &--img {
     width: 17px;
     height: 17px;
+    @include responsive(laptop) {
+      width: 25px;
+      height: 25px;
+    }
   }
 
   &--span {
@@ -120,6 +124,9 @@
     font-size: 1rem;
     line-height: 1.25rem;
     color: #0ca192;
+    @include responsive(laptop) {
+      font-size: 1.5rem;
+    }
   }
 }
 
