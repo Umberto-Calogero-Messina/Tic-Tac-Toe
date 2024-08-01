@@ -3,12 +3,31 @@
   <head>
     <meta charset="UTF-8" />
     <!-- PON UN FAVICON!!! -->
-    <link rel="icon" type="image/svg+xml" href="" />
+    <link rel="icon" type="image/svg+xml" href />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <!-- CAMBIA EL TITLE!!! -->
     <title>Vite Template</title>
   </head>
   <body>
+    <main class="main">
+      <div class="table">
+        <span class="button" data-pos="0"></span>
+        <span class="button" data-pos="1"></span>
+        <span class="button" data-pos="2"></span>
+        <span class="button" data-pos="3"></span>
+        <span class="button" data-pos="4"></span>
+        <span class="button" data-pos="5"></span>
+        <span class="button" data-pos="6"></span>
+        <span class="button" data-pos="7"></span>
+        <span class="button" data-pos="8"></span>
+      </div>
+      <div class="scoreboard">
+        <span>User Score: <span id="user-score">0</span></span>
+        <span>PC Score: <span id="pc-score">0</span></span>
+      </div>
+      <button id="restart-button" class="restart">Restart Game</button>
+    </main>
+
     <script type="module" src="./js/index.js"></script>
   </body>
 </html>

@@ -1,0 +1,58 @@
+@use '../mixins/pseudo.scss' as *;
+.table {
+  width: 452px;
+  border: 1px solid black;
+  display: grid;
+  grid-template-columns: repeat(3, 150px);
+  grid-template-rows: repeat(3, 150px);
+  margin: 150px auto 0;
+}
+
+.button {
+  width: 150px;
+  height: 150px;
+  border: 1px solid black;
+  background-color: white;
+  cursor: pointer;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cross {
+  position: relative;
+
+  &::before {
+    @include pseudo(100%, 10px) {
+      top: 50%;
+      transform: translateY(-50%) rotate(45deg);
+      background-color: black;
+    }
+  }
+
+  &::after {
+    @include pseudo(10px, 100%) {
+      left: 50%;
+      transform: translateX(-50%) rotate(45deg);
+      background-color: black;
+    }
+  }
+}
+
+.circle {
+  width: 80%;
+  height: 80%;
+  border: 5px solid black;
+  border-radius: 50%;
+  margin: auto;
+}
+
+.scoreboard {
+  margin-bottom: 20px;
+}
+
+.restart {
+  padding: 10px 20px;
+  font-size: 16px;
+}
