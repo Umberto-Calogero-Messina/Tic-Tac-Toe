@@ -82,7 +82,6 @@ const endGame = winner => {
     updateScoreboard();
     gameActive = false;
     updateTurnMessage();
-    toggleRestartButton(true);
   }, 100);
 };
 
@@ -165,7 +164,6 @@ const startGame = () => {
   currentPlayer = Math.random() < 0.5 ? 'user' : 'pc';
   gameActive = true;
   updateTurnMessage();
-  toggleRestartButton(false);
   hidePopup();
   if (currentPlayer === 'pc') setTimeout(pcMove, 1000);
 };
