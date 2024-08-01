@@ -35,7 +35,7 @@ const updateTurnMessage = () => {
   if (!gameActive) {
     messageElement.textContent = 'Partita terminata';
   } else {
-    messageElement.textContent = currentPlayer === 0 ? "User's turn" : "PC's turn";
+    messageElement.textContent = currentPlayer === 0 ? 'Turno Player' : 'Turno PC';
   }
 };
 
