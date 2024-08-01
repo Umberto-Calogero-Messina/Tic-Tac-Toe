@@ -3,7 +3,6 @@ import '../scss/styles.scss';
 const userScoreElement = document.getElementById('user-score');
 const pcScoreElement = document.getElementById('pc-score');
 const messageElement = document.getElementById('startmove');
-const restartElement = document.getElementById('restart-button');
 const popupElement = document.getElementById('popup');
 const popupMessageElement = document.getElementById('popup-message');
 const buttonElement = document.querySelectorAll('.button');
@@ -40,10 +39,6 @@ const updateTurnMessage = () => {
   } else {
     messageElement.textContent = currentPlayer === 'user' ? 'Es tu turno' : 'Es el turno del ordenador';
   }
-};
-
-const toggleRestartButton = enabled => {
-  restartElement.disabled = !enabled;
 };
 
 const showPopup = message => {
@@ -189,7 +184,6 @@ document.addEventListener('click', ev => {
   }
 });
 
-restartElement.addEventListener('click', restartGame);
 okButtonElement.addEventListener('click', restartGame);
 
 startGame();
