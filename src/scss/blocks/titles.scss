@@ -1,1 +1,13 @@
+.title {
+  text-align: center;
+  font-family: 'Alfa Slab One', serif;
+  font-weight: 400;
+  font-size: 50px;
+  line-height: 68px;
+  letter-spacing: 1%;
+  color: #545454;
 
+  &__container {
+    padding-top: 30px;
+  }
+}
