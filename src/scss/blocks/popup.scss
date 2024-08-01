@@ -1,0 +1,43 @@
+@use '../mixins/hover.scss' as *;
+.popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1;
+
+  &__content {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    position: relative;
+  }
+
+  &__message {
+    display: block;
+    margin-bottom: 10px;
+  }
+
+  &__button {
+    padding: 10px 20px;
+    border: none;
+    background: #007bff;
+    color: #fff;
+    border-radius: 4px;
+    cursor: pointer;
+
+    @include hover {
+      background: #0056b3;
+    }
+  }
+}
+
+.d-none {
+  display: none;
+}

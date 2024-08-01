@@ -1,5 +1,14 @@
 import '../scss/styles.scss';
 
+const userScoreElement = document.getElementById('user-score');
+const pcScoreElement = document.getElementById('pc-score');
+const messageElement = document.getElementById('startmove');
+const restartElement = document.getElementById('restart-button');
+const popupElement = document.getElementById('popup');
+const popupMessageElement = document.getElementById('popup-message');
+const buttonElement = document.querySelectorAll('.button');
+const okButtonElement = document.getElementById('popup-ok-button');
+
 const table = Array(9).fill(null);
 const winningCombinations = [
   [0, 1, 2],
@@ -18,64 +27,41 @@ let currentPlayer = null;
 let gameActive = true;
 
 const updateScoreboard = () => {
-  document.getElementById('user-score').textContent = userScore;
-  document.getElementById('pc-score').textContent = pcScore;
+  userScoreElement.textContent = userScore;
+  pcScoreElement.textContent = pcScore;
 };
 
 const updateTurnMessage = () => {
-  const messageElement = document.getElementById('startmove');
   if (!gameActive) {
     messageElement.textContent = 'Partita terminata';
-  } else if (currentPlayer === 0) {
-    messageElement.textContent = "User's turn";
   } else {
-    messageElement.textContent = "PC's turn";
+    messageElement.textContent = currentPlayer === 0 ? "User's turn" : "PC's turn";
   }
 };
 
 const toggleRestartButton = enabled => {
-  const restartButton = document.getElementById('restart-button');
-  restartButton.disabled = !enabled;
+  restartElement.disabled = !enabled;
 };
 
-const startGame = () => {
-  table.fill(null);
-  document.querySelectorAll('.button').forEach(button => {
-    button.classList.remove('cross', 'circle');
-  });
-  currentPlayer = Math.floor(Math.random() * 2);
-  gameActive = true;
-  updateTurnMessage();
-  toggleRestartButton(false);
-  if (currentPlayer === 1) setTimeout(pcMove, 1000);
+const showPopup = message => {
+  popupMessageElement.textContent = message;
+  popupElement.classList.remove('d-none');
 };
 
-const showGameEndAlert = () => alert('Game over. Please restart the game.');
+const hidePopup = () => {
+  popupElement.classList.add('d-none');
+};
 
-const handleUserMove = (target, pos) => {
-  if (!gameActive || table[pos] || currentPlayer !== 0) return;
-
-  makeMove(target, pos, 'circle');
-
-  if (checkWin()) {
-    setTimeout(() => {
-      alert('User wins!');
-      userScore++;
-      updateScoreboard();
-      gameActive = false;
-      updateTurnMessage();
-      toggleRestartButton(true);
-    }, 100);
-  } else if (isTie()) {
-    setTimeout(() => {
-      alert('TIE!');
-      gameActive = false;
-      updateTurnMessage();
-      toggleRestartButton(true);
-    }, 100);
-  } else {
-    switchPlayer();
-  }
+const endGame = (message, winner) => {
+  setTimeout(() => {
+    showPopup(message);
+    if (winner === 'user') userScore++;
+    if (winner === 'pc') pcScore++;
+    updateScoreboard();
+    gameActive = false;
+    updateTurnMessage();
+    toggleRestartButton(true);
+  }, 100);
 };
 
 const checkWin = () =>
@@ -94,6 +80,44 @@ const findWinningMove = player => {
 
 const shouldPlayDefensively = () => Math.random() < 0.6;
 
+const checkAndHandleGameState = (winner, playerType) => {
+  if (checkWin()) {
+    endGame(winner, playerType);
+  } else if (isTie()) {
+    endGame('Empate!');
+  } else {
+    switchPlayer();
+  }
+};
+
+const handleUserMove = (target, pos) => {
+  if (!gameActive || table[pos] || currentPlayer !== 0) return;
+
+  makeMove(target, pos, 'circle');
+  checkAndHandleGameState('User ha ganado!', 'user');
+};
+
+const makePcMove = pos => {
+  const targetElement = document.querySelector(`span[data-pos='${pos}']`);
+  if (targetElement) {
+    makeMove(targetElement, pos, 'cross');
+    checkAndHandleGameState('PC ha ganado', 'pc');
+  }
+};
+
+const makeMove = (target, pos, className) => {
+  target.classList.add(className);
+  table[pos] = className;
+};
+
+const switchPlayer = () => {
+  currentPlayer = 1 - currentPlayer;
+  updateTurnMessage();
+  if (currentPlayer === 1) {
+    setTimeout(pcMove, 500);
+  }
+};
+
 const pcMove = () => {
   if (!gameActive || currentPlayer !== 1) return;
 
@@ -111,43 +135,17 @@ const pcMove = () => {
   if (pos !== null) makePcMove(pos);
 };
 
-const makePcMove = pos => {
-  const target = document.querySelector(`span[data-pos='${pos}']`);
-  if (target) {
-    makeMove(target, pos, 'cross');
-    if (checkWin()) {
-      setTimeout(() => {
-        alert('PC wins!');
-        pcScore++;
-        updateScoreboard();
-        gameActive = false;
-        updateTurnMessage();
-        toggleRestartButton(true);
-      }, 100);
-    } else if (isTie()) {
-      setTimeout(() => {
-        alert('TIE!');
-        gameActive = false;
-        updateTurnMessage();
-        toggleRestartButton(true);
-      }, 100);
-    } else {
-      switchPlayer();
-    }
-  }
-};
-
-const makeMove = (target, pos, className) => {
-  target.classList.add(className);
-  table[pos] = className;
-};
-
-const switchPlayer = () => {
-  currentPlayer = 1 - currentPlayer;
+const startGame = () => {
+  table.fill(null);
+  buttonElement.forEach(button => {
+    button.classList.remove('cross', 'circle');
+  });
+  currentPlayer = Math.floor(Math.random() * 2);
+  gameActive = true;
   updateTurnMessage();
-  if (currentPlayer === 1) {
-    setTimeout(pcMove, 1000);
-  }
+  toggleRestartButton(false);
+  hidePopup();
+  if (currentPlayer === 1) setTimeout(pcMove, 500);
 };
 
 const restartGame = () => startGame();
@@ -159,11 +157,12 @@ document.addEventListener('click', ev => {
     if (gameActive) {
       handleUserMove(target, pos);
     } else {
-      showGameEndAlert();
+      showPopup('Partida terminada. Reinicia el juego!');
     }
   }
 });
 
-document.getElementById('restart-button').addEventListener('click', restartGame);
+okButtonElement.addEventListener('click', hidePopup);
+restartElement.addEventListener('click', restartGame);
 
 startGame();
