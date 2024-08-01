@@ -1,11 +1,17 @@
 @use '../mixins/pseudo.scss' as *;
+
+.starmove {
+  font-size: 2em;
+  color: red;
+}
+
 .table {
   width: 452px;
   border: 1px solid black;
   display: grid;
   grid-template-columns: repeat(3, 150px);
   grid-template-rows: repeat(3, 150px);
-  margin: 150px auto 0;
+  margin: 50px auto 0;
 }
 
 .button {

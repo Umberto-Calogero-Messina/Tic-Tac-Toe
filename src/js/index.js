@@ -22,6 +22,22 @@ const updateScoreboard = () => {
   document.getElementById('pc-score').textContent = pcScore;
 };
 
+const updateTurnMessage = () => {
+  const messageElement = document.getElementById('startmove');
+  if (!gameActive) {
+    messageElement.textContent = 'Partita terminata';
+  } else if (currentPlayer === 0) {
+    messageElement.textContent = "User's turn";
+  } else {
+    messageElement.textContent = "PC's turn";
+  }
+};
+
+const toggleRestartButton = enabled => {
+  const restartButton = document.getElementById('restart-button');
+  restartButton.disabled = !enabled;
+};
+
 const startGame = () => {
   table.fill(null);
   document.querySelectorAll('.button').forEach(button => {
@@ -29,7 +45,9 @@ const startGame = () => {
   });
   currentPlayer = Math.floor(Math.random() * 2);
   gameActive = true;
-  if (currentPlayer === 1) setTimeout(pcMove, 500);
+  updateTurnMessage();
+  toggleRestartButton(false);
+  if (currentPlayer === 1) setTimeout(pcMove, 1000);
 };
 
 const showGameEndAlert = () => alert('Game over. Please restart the game.');
@@ -45,15 +63,18 @@ const handleUserMove = (target, pos) => {
       userScore++;
       updateScoreboard();
       gameActive = false;
+      updateTurnMessage();
+      toggleRestartButton(true);
     }, 100);
   } else if (isTie()) {
     setTimeout(() => {
       alert('TIE!');
       gameActive = false;
+      updateTurnMessage();
+      toggleRestartButton(true);
     }, 100);
   } else {
-    currentPlayer = 1;
-    setTimeout(pcMove, 500);
+    switchPlayer();
   }
 };
 
@@ -100,14 +121,18 @@ const makePcMove = pos => {
         pcScore++;
         updateScoreboard();
         gameActive = false;
+        updateTurnMessage();
+        toggleRestartButton(true);
       }, 100);
     } else if (isTie()) {
       setTimeout(() => {
         alert('TIE!');
         gameActive = false;
+        updateTurnMessage();
+        toggleRestartButton(true);
       }, 100);
     } else {
-      currentPlayer = 0;
+      switchPlayer();
     }
   }
 };
@@ -115,6 +140,14 @@ const makePcMove = pos => {
 const makeMove = (target, pos, className) => {
   target.classList.add(className);
   table[pos] = className;
+};
+
+const switchPlayer = () => {
+  currentPlayer = 1 - currentPlayer;
+  updateTurnMessage();
+  if (currentPlayer === 1) {
+    setTimeout(pcMove, 1000);
+  }
 };
 
 const restartGame = () => startGame();
