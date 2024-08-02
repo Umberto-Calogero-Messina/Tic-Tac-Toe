@@ -7,6 +7,7 @@ const popupElement = document.getElementById('popup');
 const popupMessageElement = document.getElementById('popup-message');
 const buttonElement = document.querySelectorAll('.button');
 const okButtonElement = document.getElementById('popup-ok-button');
+const restartElement = document.getElementById('restart-button');
 
 const table = Array(9).fill(null);
 const winningCombinations = [
@@ -156,6 +157,13 @@ const pcMove = () => {
   if (pos !== null) makePcMove(pos);
 };
 
+const restartPanelFunction = () => {
+  userScore = 0;
+  pcScore = 0;
+  updateScoreboard();
+  restartGame();
+};
+
 const startGame = () => {
   table.fill(null);
   buttonElement.forEach(button => {
@@ -183,5 +191,6 @@ document.addEventListener('click', ev => {
 });
 
 okButtonElement.addEventListener('click', restartGame);
+restartElement.addEventListener('click', restartPanelFunction);
 
 startGame();
